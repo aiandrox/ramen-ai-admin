@@ -69,6 +69,7 @@ export const ShopsPage: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>ID</TableHead>
                   <TableHead>店舗名</TableHead>
                   <TableHead>住所</TableHead>
                   <TableHead>メニュー数</TableHead>
@@ -79,6 +80,9 @@ export const ShopsPage: React.FC = () => {
               <TableBody>
                 {shops.map((shop) => (
                   <TableRow key={shop.id}>
+                    <TableCell className="font-mono text-sm text-gray-500">
+                      {shop.id}
+                    </TableCell>
                     <TableCell className="font-medium">{shop.name}</TableCell>
                     <TableCell>{shop.address}</TableCell>
                     <TableCell>{shop.menus?.length || 0}</TableCell>

@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Image as ImageIcon } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { useMenus, useDeleteMenu } from '../../hooks/useMenus';
-import { Layout } from '../../components/layout/Layout';
-import { Button } from '../../components/ui/Button';
-import { Modal } from '../../components/ui/Modal';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
-import { MenuForm } from '../../components/forms/MenuForm';
-import { Menu, MenuInput } from '../../types/menu';
+import React, { useState } from "react";
+import { Plus, Edit, Trash2, Image as ImageIcon } from "lucide-react";
+import toast from "react-hot-toast";
+import { useMenus, useDeleteMenu } from "../../hooks/useMenus";
+import { Layout } from "../../components/layout/Layout";
+import { Button } from "../../components/ui/Button";
+import { Modal } from "../../components/ui/Modal";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../../components/ui/Table";
+import { MenuForm } from "../../components/forms/MenuForm";
+import { Menu, MenuInput } from "../../types/menu";
 
 export const MenusPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
-  
+
   const { data: menus = [], isLoading, error } = useMenus();
   const deleteMenuMutation = useDeleteMenu();
 
@@ -23,21 +30,21 @@ export const MenusPage: React.FC = () => {
 
     try {
       await deleteMenuMutation.mutateAsync(menu.id);
-      toast.success('メニューを削除しました');
+      toast.success("メニューを削除しました");
     } catch (error: any) {
-      toast.error('削除に失敗しました');
+      toast.error("削除に失敗しました");
     }
   };
 
   const handleCreateSubmit = async (data: MenuInput) => {
     // This will be implemented with the create mutation
-    console.log('Create menu:', data);
+    console.log("Create menu:", data);
     setShowCreateModal(false);
   };
 
   const handleUpdateSubmit = async (data: MenuInput) => {
     // This will be implemented with the update mutation
-    console.log('Update menu:', editingMenu?.id, data);
+    console.log("Update menu:", editingMenu?.id, data);
     setEditingMenu(null);
   };
 
@@ -69,6 +76,7 @@ export const MenusPage: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-96">ID</TableHead>
                   <TableHead>画像</TableHead>
                   <TableHead>メニュー名</TableHead>
                   <TableHead>店舗</TableHead>
@@ -82,16 +90,23 @@ export const MenusPage: React.FC = () => {
               <TableBody>
                 {menus.map((menu) => (
                   <TableRow key={menu.id}>
+                    <TableCell className="font-mono text-sm text-gray-500">{menu.id}</TableCell>
                     <TableCell>
                       {menu.image_url ? (
-                        <img
-                          src={menu.image_url}
-                          alt={menu.name}
-                          className="h-12 w-12 object-cover rounded-md"
-                        />
+                        <button
+                          onClick={() => window.open(menu.image_url, "_blank")}
+                          className="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md"
+                          title="画像を拡大表示"
+                        >
+                          <img
+                            src={menu.image_url}
+                            alt={menu.name}
+                            className="object-cover rounded-md cursor-pointer"
+                          />
+                        </button>
                       ) : (
-                        <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center">
-                          <ImageIcon className="h-6 w-6 text-gray-400" />
+                        <div className="h-20 w-20 bg-gray-200 rounded-md flex items-center justify-center">
+                          <ImageIcon className="h-10 w-10 text-gray-400" />
                         </div>
                       )}
                     </TableCell>
@@ -100,9 +115,7 @@ export const MenusPage: React.FC = () => {
                     <TableCell>{menu.genre.name}</TableCell>
                     <TableCell>{menu.noodle.name}</TableCell>
                     <TableCell>{menu.soup.name}</TableCell>
-                    <TableCell>
-                      {new Date(menu.created_at).toLocaleDateString('ja-JP')}
-                    </TableCell>
+                    <TableCell>{new Date(menu.created_at).toLocaleDateString("ja-JP")}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
                         <button
@@ -136,10 +149,7 @@ export const MenusPage: React.FC = () => {
           title="新規メニュー作成"
           size="lg"
         >
-          <MenuForm
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setShowCreateModal(false)}
-          />
+          <MenuForm onSubmit={handleCreateSubmit} onCancel={() => setShowCreateModal(false)} />
         </Modal>
 
         {/* Edit Modal */}
