@@ -5,14 +5,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   label,
   error,
   className = '',
   id,
   ...props
-}) => {
-  const inputId = id || Math.random().toString(36).substr(2, 9);
+}, ref) => {
+  const inputId = id || Math.random().toString(36).substring(2, 11);
 
   return (
     <div className="space-y-1">
@@ -22,6 +22,7 @@ export const Input: React.FC<InputProps> = ({
         </label>
       )}
       <input
+        ref={ref}
         id={inputId}
         className={`
           w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500
@@ -35,4 +36,6 @@ export const Input: React.FC<InputProps> = ({
       )}
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';
