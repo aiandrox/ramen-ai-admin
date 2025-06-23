@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { SearchableSelect } from '../ui/SearchableSelect';
 import { Menu, MenuInput } from '../../types/menu';
 import { useShops } from '../../hooks/useShops';
 import { useGenres, useSoups, useNoodles } from '../../hooks/useMenus';
@@ -39,6 +40,9 @@ export const MenuForm: React.FC<MenuFormProps> = ({
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<Omit<MenuInput, 'image'>>({
     resolver: yupResolver(schema),
@@ -77,77 +81,41 @@ export const MenuForm: React.FC<MenuFormProps> = ({
         placeholder="メニュー名を入力してください"
       />
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">店舗</label>
-        <select
-          {...register('shop_id', { valueAsNumber: true })}
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-        >
-          <option value="">店舗を選択してください</option>
-          {shops.map((shop) => (
-            <option key={shop.id} value={shop.id}>
-              {shop.name}
-            </option>
-          ))}
-        </select>
-        {errors.shop_id && (
-          <p className="text-sm text-red-600">{errors.shop_id.message}</p>
-        )}
-      </div>
+      <SearchableSelect
+        label="店舗"
+        options={shops}
+        value={watch('shop_id')}
+        onChange={(value) => setValue('shop_id', value as number)}
+        placeholder="店舗を選択してください"
+        error={errors.shop_id?.message}
+      />
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">ジャンル</label>
-        <select
-          {...register('genre_id', { valueAsNumber: true })}
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-        >
-          <option value="">ジャンルを選択してください</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
-        {errors.genre_id && (
-          <p className="text-sm text-red-600">{errors.genre_id.message}</p>
-        )}
-      </div>
+      <SearchableSelect
+        label="ジャンル"
+        options={genres}
+        value={watch('genre_id')}
+        onChange={(value) => setValue('genre_id', value as number)}
+        placeholder="ジャンルを選択してください"
+        error={errors.genre_id?.message}
+      />
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">スープ</label>
-        <select
-          {...register('soup_id', { valueAsNumber: true })}
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-        >
-          <option value="">スープを選択してください</option>
-          {soups.map((soup) => (
-            <option key={soup.id} value={soup.id}>
-              {soup.name}
-            </option>
-          ))}
-        </select>
-        {errors.soup_id && (
-          <p className="text-sm text-red-600">{errors.soup_id.message}</p>
-        )}
-      </div>
+      <SearchableSelect
+        label="スープ"
+        options={soups}
+        value={watch('soup_id')}
+        onChange={(value) => setValue('soup_id', value as number)}
+        placeholder="スープを選択してください"
+        error={errors.soup_id?.message}
+      />
 
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">麺</label>
-        <select
-          {...register('noodle_id', { valueAsNumber: true })}
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-        >
-          <option value="">麺を選択してください</option>
-          {noodles.map((noodle) => (
-            <option key={noodle.id} value={noodle.id}>
-              {noodle.name}
-            </option>
-          ))}
-        </select>
-        {errors.noodle_id && (
-          <p className="text-sm text-red-600">{errors.noodle_id.message}</p>
-        )}
-      </div>
+      <SearchableSelect
+        label="麺"
+        options={noodles}
+        value={watch('noodle_id')}
+        onChange={(value) => setValue('noodle_id', value as number)}
+        placeholder="麺を選択してください"
+        error={errors.noodle_id?.message}
+      />
 
       <div className="space-y-1">
         <label className="block text-sm font-medium text-gray-700">画像</label>
