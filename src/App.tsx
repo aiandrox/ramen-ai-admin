@@ -7,6 +7,9 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ShopsPage } from './pages/shops/ShopsPage';
 import { MenusPage } from './pages/menus/MenusPage';
+import { GenresPage } from './pages/master/GenresPage';
+import { SoupsPage } from './pages/master/SoupsPage';
+import { NoodlesPage } from './pages/master/NoodlesPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +64,30 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <MenusPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/master/genres"
+        element={
+          <ProtectedRoute>
+            <GenresPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/master/soups"
+        element={
+          <ProtectedRoute>
+            <SoupsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/master/noodles"
+        element={
+          <ProtectedRoute>
+            <NoodlesPage />
           </ProtectedRoute>
         }
       />
