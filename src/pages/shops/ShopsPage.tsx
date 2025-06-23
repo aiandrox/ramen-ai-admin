@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, Edit, Trash2, ExternalLink } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Plus, Edit, Trash2, ExternalLink, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useShops, useDeleteShop } from '../../hooks/useShops';
 import { Layout } from '../../components/layout/Layout';
@@ -12,9 +12,21 @@ import { Shop, ShopInput } from '../../types/shop';
 export const ShopsPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   
   const { data: shops = [], isLoading, error } = useShops();
   const deleteShopMutation = useDeleteShop();
+
+  // 検索機能
+  const filteredShops = useMemo(() => {
+    if (!searchTerm) return shops;
+    
+    const term = searchTerm.toLowerCase();
+    return shops.filter(shop => 
+      shop.name.toLowerCase().includes(term) ||
+      shop.address.toLowerCase().includes(term)
+    );
+  }, [shops, searchTerm]);
 
   const handleDelete = async (shop: Shop) => {
     if (!window.confirm(`「${shop.name}」を削除しますか？`)) {
@@ -62,6 +74,27 @@ export const ShopsPage: React.FC = () => {
           </Button>
         </div>
 
+        {/* 検索バー */}
+        <div className="flex items-center space-x-4">
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="店舗名、住所で検索..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+          </div>
+          {searchTerm && (
+            <div className="text-sm text-gray-500">
+              {filteredShops.length} 件 / {shops.length} 件中
+            </div>
+          )}
+        </div>
+
         {isLoading ? (
           <div className="text-center py-8">読み込み中...</div>
         ) : (
@@ -78,7 +111,7 @@ export const ShopsPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {shops.map((shop) => (
+                {filteredShops.map((shop) => (
                   <TableRow key={shop.id}>
                     <TableCell className="font-mono text-sm text-gray-500">
                       {shop.id}
@@ -119,6 +152,18 @@ export const ShopsPage: React.FC = () => {
                 ))}
               </TableBody>
             </Table>
+            
+            {filteredShops.length === 0 && searchTerm && (
+              <div className="text-center py-8 text-gray-500">
+                「{searchTerm}」に一致する店舗が見つかりません
+              </div>
+            )}
+            
+            {filteredShops.length === 0 && !searchTerm && shops.length > 0 && (
+              <div className="text-center py-8 text-gray-500">
+                店舗が登録されていません
+              </div>
+            )}
           </div>
         )}
 

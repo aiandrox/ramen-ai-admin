@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Plus, Edit, Trash2, Image as ImageIcon } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Plus, Edit, Trash2, Image as ImageIcon, Search, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useMenus, useDeleteMenu } from "../../hooks/useMenus";
+import { useMenus, useDeleteMenu, useGenres, useSoups, useNoodles } from "../../hooks/useMenus";
 import { Layout } from "../../components/layout/Layout";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
@@ -19,9 +19,58 @@ import { Menu, MenuInput } from "../../types/menu";
 export const MenusPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [selectedSoup, setSelectedSoup] = useState<number | null>(null);
+  const [selectedNoodle, setSelectedNoodle] = useState<number | null>(null);
 
   const { data: menus = [], isLoading, error } = useMenus();
+  const { data: genres = [] } = useGenres();
+  const { data: soups = [] } = useSoups();
+  const { data: noodles = [] } = useNoodles();
   const deleteMenuMutation = useDeleteMenu();
+
+  // 検索・フィルタリング機能
+  const filteredMenus = useMemo(() => {
+    let filtered = menus;
+
+    // テキスト検索
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(menu => 
+        menu.name.toLowerCase().includes(term) ||
+        menu.shop.name.toLowerCase().includes(term)
+      );
+    }
+
+    // ジャンルフィルター
+    if (selectedGenre) {
+      filtered = filtered.filter(menu => menu.genre.id === selectedGenre);
+    }
+
+    // スープフィルター
+    if (selectedSoup) {
+      filtered = filtered.filter(menu => menu.soup.id === selectedSoup);
+    }
+
+    // 麺フィルター
+    if (selectedNoodle) {
+      filtered = filtered.filter(menu => menu.noodle.id === selectedNoodle);
+    }
+
+    return filtered;
+  }, [menus, searchTerm, selectedGenre, selectedSoup, selectedNoodle]);
+
+  // フィルターをクリアする関数
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setSelectedGenre(null);
+    setSelectedSoup(null);
+    setSelectedNoodle(null);
+  };
+
+  // アクティブなフィルター数をカウント
+  const activeFiltersCount = [searchTerm, selectedGenre, selectedSoup, selectedNoodle].filter(Boolean).length;
 
   const handleDelete = async (menu: Menu) => {
     if (!window.confirm(`「${menu.name}」を削除しますか？`)) {
@@ -69,6 +118,90 @@ export const MenusPage: React.FC = () => {
           </Button>
         </div>
 
+        {/* 検索・フィルターバー */}
+        <div className="space-y-4">
+          {/* テキスト検索 */}
+          <div className="flex items-center space-x-4">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="メニュー名、店舗名で検索..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  フィルタークリア
+                </button>
+              )}
+              <div className="text-sm text-gray-500">
+                {filteredMenus.length} 件 / {menus.length} 件中
+              </div>
+            </div>
+          </div>
+
+          {/* セレクトフィルター */}
+          <div className="flex items-center space-x-4">
+            {/* ジャンルフィルター */}
+            <div className="w-48">
+              <select
+                value={selectedGenre || ""}
+                onChange={(e) => setSelectedGenre(e.target.value ? Number(e.target.value) : null)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">すべてのジャンル</option>
+                {genres.map((genre) => (
+                  <option key={genre.id} value={genre.id}>
+                    {genre.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* スープフィルター */}
+            <div className="w-48">
+              <select
+                value={selectedSoup || ""}
+                onChange={(e) => setSelectedSoup(e.target.value ? Number(e.target.value) : null)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">すべてのスープ</option>
+                {soups.map((soup) => (
+                  <option key={soup.id} value={soup.id}>
+                    {soup.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 麺フィルター */}
+            <div className="w-48">
+              <select
+                value={selectedNoodle || ""}
+                onChange={(e) => setSelectedNoodle(e.target.value ? Number(e.target.value) : null)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">すべての麺</option>
+                {noodles.map((noodle) => (
+                  <option key={noodle.id} value={noodle.id}>
+                    {noodle.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="text-center py-8">読み込み中...</div>
         ) : (
@@ -88,7 +221,7 @@ export const MenusPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {menus.map((menu) => (
+                {filteredMenus.map((menu) => (
                   <TableRow key={menu.id}>
                     <TableCell className="font-mono text-sm text-gray-500">{menu.id}</TableCell>
                     <TableCell>
@@ -139,6 +272,18 @@ export const MenusPage: React.FC = () => {
                 ))}
               </TableBody>
             </Table>
+            
+            {filteredMenus.length === 0 && activeFiltersCount > 0 && (
+              <div className="text-center py-8 text-gray-500">
+                指定された条件に一致するメニューが見つかりません
+              </div>
+            )}
+            
+            {filteredMenus.length === 0 && activeFiltersCount === 0 && menus.length > 0 && (
+              <div className="text-center py-8 text-gray-500">
+                メニューが登録されていません
+              </div>
+            )}
           </div>
         )}
 
