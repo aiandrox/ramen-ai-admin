@@ -1,8 +1,8 @@
-import React from 'react';
-import { Store, UtensilsCrossed, Users } from 'lucide-react';
-import { useShops } from '../hooks/useShops';
-import { useMenus } from '../hooks/useMenus';
-import { Layout } from '../components/layout/Layout';
+import React from "react";
+import { Store, UtensilsCrossed, Users } from "lucide-react";
+import { useShops } from "../hooks/useShops";
+import { useMenus } from "../hooks/useMenus";
+import { Layout } from "../components/layout/Layout";
 
 export const DashboardPage: React.FC = () => {
   const { data: shops = [] } = useShops();
@@ -10,22 +10,16 @@ export const DashboardPage: React.FC = () => {
 
   const stats = [
     {
-      name: '店舗数',
+      name: "店舗数",
       value: shops.length,
       icon: Store,
-      color: 'bg-blue-500',
+      color: "bg-blue-500",
     },
     {
-      name: 'メニュー数',
+      name: "メニュー数",
       value: menus.length,
       icon: UtensilsCrossed,
-      color: 'bg-green-500',
-    },
-    {
-      name: '管理者数',
-      value: 1,
-      icon: Users,
-      color: 'bg-purple-500',
+      color: "bg-green-500",
     },
   ];
 
@@ -33,7 +27,7 @@ export const DashboardPage: React.FC = () => {
     <Layout>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stats.map((stat) => (
             <div key={stat.name} className="bg-white overflow-hidden shadow rounded-lg">
@@ -46,12 +40,8 @@ export const DashboardPage: React.FC = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        {stat.name}
-                      </dt>
-                      <dd className="text-3xl font-semibold text-gray-900">
-                        {stat.value}
-                      </dd>
+                      <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
+                      <dd className="text-3xl font-semibold text-gray-900">{stat.value}</dd>
                     </dl>
                   </div>
                 </div>
@@ -66,14 +56,9 @@ export const DashboardPage: React.FC = () => {
             ラーメンAI管理画面へようこそ。このダッシュボードから店舗とメニューを管理できます。
           </p>
           <div className="mt-4 space-y-2">
-            <p className="text-sm text-gray-500">
-              • 店舗管理: ラーメン店の情報を追加・編集・削除
-            </p>
+            <p className="text-sm text-gray-500">• 店舗管理: ラーメン店の情報を追加・編集・削除</p>
             <p className="text-sm text-gray-500">
               • メニュー管理: 各店舗のメニュー情報と画像を管理
-            </p>
-            <p className="text-sm text-gray-500">
-              • AI推奨機能: ユーザーの好みに基づいてメニューを推奨
             </p>
           </div>
         </div>
