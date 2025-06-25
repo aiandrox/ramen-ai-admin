@@ -33,7 +33,7 @@ npm install
 
 ```env
 PORT=3001
-REACT_APP_API_URL=http://localhost:3000/api/v1/admin
+REACT_APP_API_URL=http://localhost:3000
 REACT_APP_APP_NAME=ラーメンAI管理画面
 ```
 

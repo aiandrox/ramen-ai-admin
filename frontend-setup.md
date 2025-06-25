@@ -202,7 +202,7 @@ export const useAuth = () => {
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     const userData = localStorage.getItem('admin_user');
-    
+
     if (token && userData) {
       setUser(JSON.parse(userData));
     }
@@ -276,7 +276,7 @@ export const useShops = () => {
 
 export const useCreateShop = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data: ShopInput) => shopsAPI.create(data),
     onSuccess: () => {
@@ -300,7 +300,7 @@ npm install -D \
 ## 🚀 環境変数（.env）
 
 ```env
-REACT_APP_API_URL=http://localhost:3000/api/v1/admin
+REACT_APP_API_URL=http://localhost:3000
 REACT_APP_APP_NAME=ラーメンAI管理画面
 ```
 
