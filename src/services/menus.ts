@@ -14,14 +14,14 @@ export const menusAPI = {
 
   create: async (data: MenuInput): Promise<Menu> => {
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('shop_id', data.shop_id.toString());
-    formData.append('genre_id', data.genre_id.toString());
-    formData.append('soup_id', data.soup_id.toString());
-    formData.append('noodle_id', data.noodle_id.toString());
+    formData.append('menu[name]', data.name);
+    formData.append('menu[shop_id]', data.shop_id.toString());
+    formData.append('menu[genre_id]', data.genre_id.toString());
+    formData.append('menu[soup_id]', data.soup_id.toString());
+    formData.append('menu[noodle_id]', data.noodle_id.toString());
     
     if (data.image) {
-      formData.append('image', data.image);
+      formData.append('menu[image]', data.image);
     }
 
     const response = await api.post('/menus', formData, {
@@ -35,12 +35,12 @@ export const menusAPI = {
   update: async (id: number, data: Partial<MenuInput>): Promise<Menu> => {
     const formData = new FormData();
     
-    if (data.name) formData.append('name', data.name);
-    if (data.shop_id) formData.append('shop_id', data.shop_id.toString());
-    if (data.genre_id) formData.append('genre_id', data.genre_id.toString());
-    if (data.soup_id) formData.append('soup_id', data.soup_id.toString());
-    if (data.noodle_id) formData.append('noodle_id', data.noodle_id.toString());
-    if (data.image) formData.append('image', data.image);
+    if (data.name) formData.append('menu[name]', data.name);
+    if (data.shop_id) formData.append('menu[shop_id]', data.shop_id.toString());
+    if (data.genre_id) formData.append('menu[genre_id]', data.genre_id.toString());
+    if (data.soup_id) formData.append('menu[soup_id]', data.soup_id.toString());
+    if (data.noodle_id) formData.append('menu[noodle_id]', data.noodle_id.toString());
+    if (data.image) formData.append('menu[image]', data.image);
 
     const response = await api.put(`/menus/${id}`, formData, {
       headers: {

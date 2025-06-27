@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Plus, Edit, Trash2, Image as ImageIcon, Search, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useMenus, useDeleteMenu, useGenres, useSoups, useNoodles } from "../../hooks/useMenus";
+import { useMenus, useCreateMenu, useUpdateMenu, useDeleteMenu, useGenres, useSoups, useNoodles } from "../../hooks/useMenus";
 import { Layout } from "../../components/layout/Layout";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
@@ -28,6 +28,8 @@ export const MenusPage: React.FC = () => {
   const { data: genres = [] } = useGenres();
   const { data: soups = [] } = useSoups();
   const { data: noodles = [] } = useNoodles();
+  const createMenuMutation = useCreateMenu();
+  const updateMenuMutation = useUpdateMenu();
   const deleteMenuMutation = useDeleteMenu();
 
   // 検索・フィルタリング機能
@@ -86,15 +88,25 @@ export const MenusPage: React.FC = () => {
   };
 
   const handleCreateSubmit = async (data: MenuInput) => {
-    // This will be implemented with the create mutation
-    console.log("Create menu:", data);
-    setShowCreateModal(false);
+    try {
+      await createMenuMutation.mutateAsync(data);
+      toast.success('メニューを作成しました');
+      setShowCreateModal(false);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || '作成に失敗しました');
+    }
   };
 
   const handleUpdateSubmit = async (data: MenuInput) => {
-    // This will be implemented with the update mutation
-    console.log("Update menu:", editingMenu?.id, data);
-    setEditingMenu(null);
+    if (!editingMenu) return;
+    
+    try {
+      await updateMenuMutation.mutateAsync({ id: editingMenu.id, data });
+      toast.success('メニューを更新しました');
+      setEditingMenu(null);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || '更新に失敗しました');
+    }
   };
 
   if (error) {
@@ -112,7 +124,10 @@ export const MenusPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">メニュー管理</h1>
-          <Button onClick={() => setShowCreateModal(true)}>
+          <Button 
+            onClick={() => setShowCreateModal(true)}
+            disabled={createMenuMutation.isPending}
+          >
             <Plus className="h-4 w-4 mr-2" />
             新規メニュー作成
           </Button>
@@ -294,7 +309,11 @@ export const MenusPage: React.FC = () => {
           title="新規メニュー作成"
           size="lg"
         >
-          <MenuForm onSubmit={handleCreateSubmit} onCancel={() => setShowCreateModal(false)} />
+          <MenuForm 
+            onSubmit={handleCreateSubmit} 
+            onCancel={() => setShowCreateModal(false)}
+            loading={createMenuMutation.isPending}
+          />
         </Modal>
 
         {/* Edit Modal */}
@@ -309,6 +328,7 @@ export const MenusPage: React.FC = () => {
               menu={editingMenu}
               onSubmit={handleUpdateSubmit}
               onCancel={() => setEditingMenu(null)}
+              loading={updateMenuMutation.isPending}
             />
           )}
         </Modal>

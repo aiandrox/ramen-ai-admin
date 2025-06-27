@@ -13,12 +13,12 @@ export const shopsAPI = {
   },
 
   create: async (data: ShopInput): Promise<Shop> => {
-    const response = await api.post('/shops', data);
+    const response = await api.post('/shops', { shop: data });
     return response.data;
   },
 
   update: async (id: number, data: Partial<ShopInput>): Promise<Shop> => {
-    const response = await api.put(`/shops/${id}`, data);
+    const response = await api.put(`/shops/${id}`, { shop: data });
     return response.data;
   },
 
