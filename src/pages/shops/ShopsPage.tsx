@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, Edit, Trash2, ExternalLink, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useShops, useDeleteShop } from '../../hooks/useShops';
+import { useShops, useCreateShop, useUpdateShop, useDeleteShop } from '../../hooks/useShops';
 import { Layout } from '../../components/layout/Layout';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
@@ -15,6 +15,8 @@ export const ShopsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   
   const { data: shops = [], isLoading, error } = useShops();
+  const createShopMutation = useCreateShop();
+  const updateShopMutation = useUpdateShop();
   const deleteShopMutation = useDeleteShop();
 
   // 検索機能
@@ -42,15 +44,25 @@ export const ShopsPage: React.FC = () => {
   };
 
   const handleCreateSubmit = async (data: ShopInput) => {
-    // This will be implemented with the create mutation
-    console.log('Create shop:', data);
-    setShowCreateModal(false);
+    try {
+      await createShopMutation.mutateAsync(data);
+      toast.success('店舗を作成しました');
+      setShowCreateModal(false);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || '作成に失敗しました');
+    }
   };
 
   const handleUpdateSubmit = async (data: ShopInput) => {
-    // This will be implemented with the update mutation
-    console.log('Update shop:', editingShop?.id, data);
-    setEditingShop(null);
+    if (!editingShop) return;
+    
+    try {
+      await updateShopMutation.mutateAsync({ id: editingShop.id, data });
+      toast.success('店舗を更新しました');
+      setEditingShop(null);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || '更新に失敗しました');
+    }
   };
 
   if (error) {
@@ -68,7 +80,10 @@ export const ShopsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">店舗管理</h1>
-          <Button onClick={() => setShowCreateModal(true)}>
+          <Button 
+            onClick={() => setShowCreateModal(true)}
+            disabled={createShopMutation.isPending}
+          >
             <Plus className="h-4 w-4 mr-2" />
             新規店舗作成
           </Button>
@@ -176,6 +191,7 @@ export const ShopsPage: React.FC = () => {
           <ShopForm
             onSubmit={handleCreateSubmit}
             onCancel={() => setShowCreateModal(false)}
+            loading={createShopMutation.isPending}
           />
         </Modal>
 
@@ -190,6 +206,7 @@ export const ShopsPage: React.FC = () => {
               shop={editingShop}
               onSubmit={handleUpdateSubmit}
               onCancel={() => setEditingShop(null)}
+              loading={updateShopMutation.isPending}
             />
           )}
         </Modal>
