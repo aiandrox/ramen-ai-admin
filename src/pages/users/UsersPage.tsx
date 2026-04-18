@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useUsers } from '../../hooks/useUsers';
 import { Layout } from '../../components/layout/Layout';
 import { Pagination } from '../../components/ui/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 
 export const UsersPage: React.FC = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
@@ -80,6 +82,7 @@ export const UsersPage: React.FC = () => {
                   <TableHead>プロバイダー</TableHead>
                   <TableHead>認証済み</TableHead>
                   <TableHead>登録日時</TableHead>
+                  <TableHead>投稿</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -133,6 +136,15 @@ export const UsersPage: React.FC = () => {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() => navigate(`/users/${user.id}/menu_reports`)}
+                        className="text-indigo-600 hover:text-indigo-800"
+                        title="投稿一覧"
+                      >
+                        <FileText className="h-4 w-4" />
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}

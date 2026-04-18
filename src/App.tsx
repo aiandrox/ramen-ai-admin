@@ -11,6 +11,7 @@ import { GenresPage } from './pages/master/GenresPage';
 import { SoupsPage } from './pages/master/SoupsPage';
 import { NoodlesPage } from './pages/master/NoodlesPage';
 import { UsersPage } from './pages/users/UsersPage';
+import { UserMenuReportsPage } from './pages/users/UserMenuReportsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -97,6 +98,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <UsersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users/:userId/menu_reports"
+        element={
+          <ProtectedRoute>
+            <UserMenuReportsPage />
           </ProtectedRoute>
         }
       />
