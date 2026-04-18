@@ -158,7 +158,7 @@ export const SearchableSelect = React.forwardRef<HTMLInputElement, SearchableSel
 
         {/* Dropdown */}
         {isOpen && (
-          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+          <div className="absolute z-[100] mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
             {/* Search input */}
             <div className="sticky top-0 bg-white px-3 py-2 border-b border-gray-200">
               <div className="relative">
