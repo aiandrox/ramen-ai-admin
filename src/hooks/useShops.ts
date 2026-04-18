@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { shopsAPI } from '../services/shops';
-import { ShopInput } from '../types/shop';
+import { ShopInput, ShopUpdateInput } from '../types/shop';
 
 export const useShops = () => {
   return useQuery({
@@ -32,7 +32,7 @@ export const useUpdateShop = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<ShopInput> }) => 
+    mutationFn: ({ id, data }: { id: number; data: ShopUpdateInput }) =>
       shopsAPI.update(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['shops'] });

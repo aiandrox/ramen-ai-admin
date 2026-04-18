@@ -3,7 +3,8 @@ import { Shop } from './shop';
 export interface Menu {
   id: number;
   name: string;
-  image_url?: string;
+  shop_id: number;
+  image_url: string;
   created_at: string;
   updated_at: string;
   shop: Shop;
@@ -15,10 +16,15 @@ export interface Menu {
 export interface MenuInput {
   name: string;
   shop_id: number;
-  genre_id: number;
-  soup_id: number;
-  noodle_id: number;
-  image?: File;
+  image: File;
+  genre_id?: number;
+  soup_id?: number;
+  noodle_id?: number;
+}
+
+export interface MenuUpdateInput {
+  name?: string;
+  genre_id?: number;
 }
 
 export interface Genre {

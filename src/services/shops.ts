@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Shop, ShopInput } from '../types/shop';
+import { Shop, ShopInput, ShopUpdateInput } from '../types/shop';
 
 export const shopsAPI = {
   getAll: async (): Promise<Shop[]> => {
@@ -17,8 +17,8 @@ export const shopsAPI = {
     return response.data;
   },
 
-  update: async (id: number, data: Partial<ShopInput>): Promise<Shop> => {
-    const response = await api.put(`/shops/${id}`, { shop: data });
+  update: async (id: number, data: ShopUpdateInput): Promise<Shop> => {
+    const response = await api.patch(`/shops/${id}`, { shop: data });
     return response.data;
   },
 

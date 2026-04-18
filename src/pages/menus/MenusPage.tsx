@@ -14,7 +14,7 @@ import {
   TableCell,
 } from "../../components/ui/Table";
 import { MenuForm } from "../../components/forms/MenuForm";
-import { Menu, MenuInput } from "../../types/menu";
+import { Menu, MenuInput, MenuUpdateInput } from "../../types/menu";
 
 export const MenusPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -97,9 +97,9 @@ export const MenusPage: React.FC = () => {
     }
   };
 
-  const handleUpdateSubmit = async (data: MenuInput) => {
+  const handleUpdateSubmit = async (data: MenuUpdateInput) => {
     if (!editingMenu) return;
-    
+
     try {
       await updateMenuMutation.mutateAsync({ id: editingMenu.id, data });
       toast.success('メニューを更新しました');

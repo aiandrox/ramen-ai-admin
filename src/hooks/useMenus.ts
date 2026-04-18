@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { menusAPI } from "../services/menus";
-import { MenuInput } from "../types/menu";
+import { MenuInput, MenuUpdateInput } from "../types/menu";
 
 export const useMenus = () => {
   return useQuery({
@@ -32,7 +32,7 @@ export const useUpdateMenu = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<MenuInput> }) =>
+    mutationFn: ({ id, data }: { id: number; data: MenuUpdateInput }) =>
       menusAPI.update(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["menus"] });

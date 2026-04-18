@@ -7,7 +7,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 import { ShopForm } from '../../components/forms/ShopForm';
-import { Shop, ShopInput } from '../../types/shop';
+import { Shop, ShopInput, ShopUpdateInput } from '../../types/shop';
 
 export const ShopsPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -53,9 +53,9 @@ export const ShopsPage: React.FC = () => {
     }
   };
 
-  const handleUpdateSubmit = async (data: ShopInput) => {
+  const handleUpdateSubmit = async (data: ShopUpdateInput) => {
     if (!editingShop) return;
-    
+
     try {
       await updateShopMutation.mutateAsync({ id: editingShop.id, data });
       toast.success('店舗を更新しました');
