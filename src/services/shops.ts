@@ -1,10 +1,11 @@
 import { api } from './api';
 import { Shop, ShopInput, ShopUpdateInput } from '../types/shop';
+import { PaginatedResponse, parsePagination } from '../types/pagination';
 
 export const shopsAPI = {
-  getAll: async (): Promise<Shop[]> => {
-    const response = await api.get('/shops');
-    return response.data;
+  getAll: async (page = 1): Promise<PaginatedResponse<Shop>> => {
+    const response = await api.get('/shops', { params: { page } });
+    return { data: response.data, pagination: parsePagination(response.headers) };
   },
 
   getById: async (id: number): Promise<Shop> => {

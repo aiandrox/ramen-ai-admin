@@ -2,11 +2,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { menusAPI } from "../services/menus";
 import { MenuInput, MenuUpdateInput } from "../types/menu";
 
-export const useMenus = () => {
-  return useQuery({
-    queryKey: ["menus"],
-    queryFn: menusAPI.getAll,
+export const useMenus = (page = 1) => {
+  const query = useQuery({
+    queryKey: ["menus", page],
+    queryFn: () => menusAPI.getAll(page),
   });
+
+  return {
+    ...query,
+    data: query.data?.data ?? [],
+    pagination: query.data?.pagination,
+  };
 };
 
 export const useMenu = (id: number) => {

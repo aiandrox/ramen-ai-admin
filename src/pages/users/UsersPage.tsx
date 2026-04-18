@@ -2,14 +2,21 @@ import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { useUsers } from '../../hooks/useUsers';
 import { Layout } from '../../components/layout/Layout';
+import { Pagination } from '../../components/ui/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 
 export const UsersPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
 
-  const { data: users = [], isLoading, error } = useUsers();
+  const { data: users = [], pagination, isLoading, error } = useUsers(page);
 
-  // 検索機能
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    setSearchTerm("");
+  };
+
+  // 検索機能（現在ページ内）
   const filteredUsers = useMemo(() => {
     if (!searchTerm) return users;
 
@@ -142,6 +149,10 @@ export const UsersPage: React.FC = () => {
               <div className="text-center py-8 text-gray-500">
                 ユーザーが登録されていません
               </div>
+            )}
+
+            {pagination && !searchTerm && (
+              <Pagination pagination={pagination} onPageChange={handlePageChange} />
             )}
           </div>
         )}

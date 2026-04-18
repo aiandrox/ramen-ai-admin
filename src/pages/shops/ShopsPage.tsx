@@ -5,6 +5,7 @@ import { useShops, useCreateShop, useUpdateShop, useDeleteShop } from '../../hoo
 import { Layout } from '../../components/layout/Layout';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { Pagination } from '../../components/ui/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table';
 import { ShopForm } from '../../components/forms/ShopForm';
 import { Shop, ShopInput, ShopUpdateInput } from '../../types/shop';
@@ -13,18 +14,24 @@ export const ShopsPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingShop, setEditingShop] = useState<Shop | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  
-  const { data: shops = [], isLoading, error } = useShops();
+  const [page, setPage] = useState(1);
+
+  const { data: shops = [], pagination, isLoading, error } = useShops(page);
   const createShopMutation = useCreateShop();
   const updateShopMutation = useUpdateShop();
   const deleteShopMutation = useDeleteShop();
 
-  // 検索機能
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    setSearchTerm("");
+  };
+
+  // 検索機能（現在ページ内）
   const filteredShops = useMemo(() => {
     if (!searchTerm) return shops;
-    
+
     const term = searchTerm.toLowerCase();
-    return shops.filter(shop => 
+    return shops.filter(shop =>
       shop.name.toLowerCase().includes(term) ||
       shop.address.toLowerCase().includes(term)
     );
@@ -173,11 +180,15 @@ export const ShopsPage: React.FC = () => {
                 「{searchTerm}」に一致する店舗が見つかりません
               </div>
             )}
-            
-            {filteredShops.length === 0 && !searchTerm && shops.length > 0 && (
+
+            {filteredShops.length === 0 && !searchTerm && shops.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 店舗が登録されていません
               </div>
+            )}
+
+            {pagination && !searchTerm && (
+              <Pagination pagination={pagination} onPageChange={handlePageChange} />
             )}
           </div>
         )}

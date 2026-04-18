@@ -5,19 +5,19 @@ import { useMenus } from "../hooks/useMenus";
 import { Layout } from "../components/layout/Layout";
 
 export const DashboardPage: React.FC = () => {
-  const { data: shops = [] } = useShops();
-  const { data: menus = [] } = useMenus();
+  const { pagination: shopsPagination } = useShops();
+  const { pagination: menusPagination } = useMenus();
 
   const stats = [
     {
       name: "店舗数",
-      value: shops.length,
+      value: shopsPagination?.totalCount ?? '-',
       icon: Store,
       color: "bg-blue-500",
     },
     {
       name: "メニュー数",
-      value: menus.length,
+      value: menusPagination?.totalCount ?? '-',
       icon: UtensilsCrossed,
       color: "bg-green-500",
     },

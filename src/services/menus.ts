@@ -1,10 +1,11 @@
 import { api } from "./api";
 import { Menu, MenuInput, MenuUpdateInput, Genre, Soup, Noodle } from "../types/menu";
+import { PaginatedResponse, parsePagination } from "../types/pagination";
 
 export const menusAPI = {
-  getAll: async (): Promise<Menu[]> => {
-    const response = await api.get("/menus");
-    return response.data;
+  getAll: async (page = 1): Promise<PaginatedResponse<Menu>> => {
+    const response = await api.get("/menus", { params: { page } });
+    return { data: response.data, pagination: parsePagination(response.headers) };
   },
 
   getById: async (id: number): Promise<Menu> => {

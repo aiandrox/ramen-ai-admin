@@ -13,6 +13,7 @@ import {
   TableHead,
   TableCell,
 } from "../../components/ui/Table";
+import { Pagination } from "../../components/ui/Pagination";
 import { MenuForm } from "../../components/forms/MenuForm";
 import { Menu, MenuInput, MenuUpdateInput } from "../../types/menu";
 
@@ -23,8 +24,9 @@ export const MenusPage: React.FC = () => {
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const [selectedSoup, setSelectedSoup] = useState<number | null>(null);
   const [selectedNoodle, setSelectedNoodle] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
 
-  const { data: menus = [], isLoading, error } = useMenus();
+  const { data: menus = [], pagination, isLoading, error } = useMenus(page);
   const { data: genres = [] } = useGenres();
   const { data: soups = [] } = useSoups();
   const { data: noodles = [] } = useNoodles();
@@ -62,6 +64,14 @@ export const MenusPage: React.FC = () => {
 
     return filtered;
   }, [menus, searchTerm, selectedGenre, selectedSoup, selectedNoodle]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    setSearchTerm("");
+    setSelectedGenre(null);
+    setSelectedSoup(null);
+    setSelectedNoodle(null);
+  };
 
   // フィルターをクリアする関数
   const clearAllFilters = () => {
@@ -293,11 +303,15 @@ export const MenusPage: React.FC = () => {
                 指定された条件に一致するメニューが見つかりません
               </div>
             )}
-            
-            {filteredMenus.length === 0 && activeFiltersCount === 0 && menus.length > 0 && (
+
+            {filteredMenus.length === 0 && activeFiltersCount === 0 && menus.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 メニューが登録されていません
               </div>
+            )}
+
+            {pagination && activeFiltersCount === 0 && (
+              <Pagination pagination={pagination} onPageChange={handlePageChange} />
             )}
           </div>
         )}

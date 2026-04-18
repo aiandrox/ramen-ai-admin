@@ -2,11 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { shopsAPI } from '../services/shops';
 import { ShopInput, ShopUpdateInput } from '../types/shop';
 
-export const useShops = () => {
-  return useQuery({
-    queryKey: ['shops'],
-    queryFn: shopsAPI.getAll,
+export const useShops = (page = 1) => {
+  const query = useQuery({
+    queryKey: ['shops', page],
+    queryFn: () => shopsAPI.getAll(page),
   });
+
+  return {
+    ...query,
+    data: query.data?.data ?? [],
+    pagination: query.data?.pagination,
+  };
 };
 
 export const useShop = (id: number) => {
@@ -19,7 +25,7 @@ export const useShop = (id: number) => {
 
 export const useCreateShop = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data: ShopInput) => shopsAPI.create(data),
     onSuccess: () => {
@@ -30,7 +36,7 @@ export const useCreateShop = () => {
 
 export const useUpdateShop = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: ShopUpdateInput }) =>
       shopsAPI.update(id, data),
@@ -43,7 +49,7 @@ export const useUpdateShop = () => {
 
 export const useDeleteShop = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (id: number) => shopsAPI.delete(id),
     onSuccess: () => {
