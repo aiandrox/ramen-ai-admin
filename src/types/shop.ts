@@ -23,4 +23,6 @@ export interface ShopInput {
 
 export interface ShopUpdateInput {
   name: string;
+  address?: string;
+  google_map_url?: string;
 }

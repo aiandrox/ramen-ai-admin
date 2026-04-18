@@ -8,12 +8,12 @@ import { Shop, ShopInput, ShopUpdateInput } from '../../types/shop';
 
 const createSchema = yup.object({
   google_map_url: yup.string().url('有効なURLを入力してください').required('Google Map URLは必須です'),
-  name: yup.string(),
-  address: yup.string(),
 });
 
 const updateSchema = yup.object({
   name: yup.string().required('店舗名は必須です'),
+  address: yup.string(),
+  google_map_url: yup.string().url('有効なURLを入力してください'),
 });
 
 interface ShopFormCreateProps {
@@ -50,7 +50,11 @@ export const ShopForm: React.FC<ShopFormProps> = ({
     resolver: yupResolver(updateSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
-    defaultValues: shop ? { name: shop.name } : undefined,
+    defaultValues: shop ? {
+      name: shop.name,
+      address: shop.address,
+      google_map_url: shop.google_map_url,
+    } : undefined,
   });
 
   if (isEditing) {
@@ -62,6 +66,18 @@ export const ShopForm: React.FC<ShopFormProps> = ({
           label="店舗名"
           error={errors.name?.message}
           placeholder="店舗名を入力してください"
+        />
+        <Input
+          {...register('address')}
+          label="住所"
+          error={errors.address?.message}
+          placeholder="住所を入力してください"
+        />
+        <Input
+          {...register('google_map_url')}
+          label="Google Map URL"
+          error={errors.google_map_url?.message}
+          placeholder="https://maps.app.goo.gl/..."
         />
         <div className="flex justify-end space-x-3 pt-4">
           <Button type="button" variant="secondary" onClick={onCancel} disabled={loading}>
@@ -83,18 +99,6 @@ export const ShopForm: React.FC<ShopFormProps> = ({
         label="Google Map URL"
         error={errors.google_map_url?.message}
         placeholder="https://maps.app.goo.gl/..."
-      />
-      <Input
-        {...register('name')}
-        label="店舗名（任意）"
-        error={errors.name?.message}
-        placeholder="店舗名を入力してください"
-      />
-      <Input
-        {...register('address')}
-        label="住所（任意）"
-        error={errors.address?.message}
-        placeholder="住所を入力してください"
       />
       <div className="flex justify-end space-x-3 pt-4">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={loading}>
