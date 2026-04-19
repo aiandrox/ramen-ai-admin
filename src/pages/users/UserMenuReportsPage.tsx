@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, Image as ImageIcon } from 'lucide-react';
 import { useUserMenuReports } from '../../hooks/useUserMenuReports';
 import { Layout } from '../../components/layout/Layout';
+import { Pagination } from '../../components/ui/Pagination';
 
 export const UserMenuReportsPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const { data: reports = [], isLoading, error } = useUserMenuReports(Number(userId));
+  const [page, setPage] = useState(1);
+  const { data: reports = [], pagination, isLoading, error } = useUserMenuReports(Number(userId), page);
 
   const user = reports[0]?.user;
 
@@ -49,7 +51,9 @@ export const UserMenuReportsPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-sm text-gray-500">{reports.length} 件</p>
+            {pagination && (
+              <p className="text-sm text-gray-500">{pagination.totalCount} 件</p>
+            )}
             {reports.map((report) => (
               <div key={report.id} className="bg-white shadow rounded-lg p-6">
                 <div className="flex items-start justify-between">
@@ -141,6 +145,11 @@ export const UserMenuReportsPage: React.FC = () => {
                 </p>
               </div>
             ))}
+            {pagination && (
+              <div className="bg-white shadow rounded-lg">
+                <Pagination pagination={pagination} onPageChange={setPage} />
+              </div>
+            )}
           </div>
         )}
       </div>
